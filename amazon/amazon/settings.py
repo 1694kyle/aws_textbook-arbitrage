@@ -101,9 +101,9 @@ FEED_EXPORT_FIELDS = ['title','asin','price','trade_value','profit','roi,url']
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_KEY')
 
-# LOG_LEVEL = 'WARNING'
-# LOG_FILE = os.path.join(LOCAL_OUTPUT_DIR, 'log {}'.format(date))
-# open(LOG_FILE, 'wb').close()
+LOG_LEVEL = 'WARNING'
+LOG_FILE = os.path.join(LOCAL_OUTPUT_DIR, 'log {}'.format(date))
+open(LOG_FILE, 'wb').close()
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html

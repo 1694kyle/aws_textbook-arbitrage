@@ -22,7 +22,7 @@ NEWSPIDER_MODULE = 'amazon.spiders'
 USER_AGENT = "Mozilla/5.0 (Windows N 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36"
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS=32
+CONCURRENT_REQUESTS = 20
 
 CONCURRENT_ITEMS = 100
 
@@ -32,7 +32,7 @@ CONCURRENT_ITEMS = 100
 #DOWNLOAD_DELAY = 0
 
 # The download delay setting will honor only one of:
-CONCURRENT_REQUESTS_PER_DOMAIN=32
+CONCURRENT_REQUESTS_PER_DOMAIN = 32
 #CONCURRENT_REQUESTS_PER_IP=16
 
 # Disable cookies (enabled by default)
@@ -48,7 +48,7 @@ DEFAULT_REQUEST_HEADERS = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0'
 }
 
-DEPTH_LIMIT = 500
+DEPTH_LIMIT = 100
 # Enable or disable spider middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {

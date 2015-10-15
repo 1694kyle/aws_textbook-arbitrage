@@ -35,22 +35,35 @@ def load_xpaths():
 def build_amzn_link(domain_suffix):
     return 'https://www.amazon.com{}'.format(domain_suffix)
 
+
 def build_abe_link(isbn):
     return 'http://buyback.abebooks.com/cart.aspx?a=add&i={}|0|3&c={}&st=-1'.format(isbn)
 
+
 def build_chegg_link(isbn):
     return 'https://www.chegg.com/sell-textbooks/search?buyback_search={}'.format(isbn)
+
 
 def build_buyback_link(isbn):
     return r'http://www.buybacktextbooks.com/compare/{}'.format(isbn)
 
 
-
 class AmazonSpider(CrawlSpider):
     name = 'amazon'
-    allowed_domains = [r'www.amazon.com', r'buyback.abebooks.com', r'www.buybacktextbooks.com', r'www.chegg.com']
+    allowed_domains = [r'www.amazon.com'] #, r'buyback.abebooks.com', r'www.buybacktextbooks.com', r'www.chegg.com']
     start_urls = [
-        r'http://www.amazon.com/New-Used-Textbooks-Books/b?node=465600'
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_0?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468220&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_1?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468226&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_2?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468204&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_3?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468224&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_4?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468212&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_5?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468206&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_6?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468222&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_7?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468228&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_8?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A684283011&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_9?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468216&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_10?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468214&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_11?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A684300011&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600'
     ]
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5})'

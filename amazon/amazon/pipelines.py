@@ -52,7 +52,7 @@ class ProfitablePipeline(object):
     def process_item(self, item, spider):
         profitable, item = check_profit(item)
         if profitable:
-            print 'Profitable: {}'.format(item['asin'])
+            print 'Profitable: {}, {}'.format(item['asin'], item['profit'])
             return item
         else:
             raise DropItem('\tNot Profitable: {}'.format(item['asin']))

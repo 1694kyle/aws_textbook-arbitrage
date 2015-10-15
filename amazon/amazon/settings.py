@@ -104,8 +104,8 @@ AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_KEY')
 
 # LOG_STDOUT = True
-# LOG_LEVEL = 'WARNING'
-
+LOG_LEVEL = 'WARNING'
+LOG_FILE = os.path.join(LOCAL_OUTPUT_DIR, 'log-{]'.format(date))
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
 # NOTE: AutoThrottle will honour the standard settings for concurrency and delay

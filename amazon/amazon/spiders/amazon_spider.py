@@ -13,7 +13,7 @@ def load_xpaths():
     xpaths = {
         'title': '//span[@id="productTitle"]/text()',
         'asin': '',
-        'any_lowest_price': '//span[contains(@class, "price") and contains(text(), "$")]/text()[1]',
+        # 'any_lowest_price': '//span[contains(@class, "price") and contains(text(), "$")]/text()[1]',
         'lowest_used_price1': '//a[contains(text(),"Used")]/text()[2]',
         'lowest_new_price1': '//a[contains(text(),"New")]/text()[2]',
         'lowest_used_price2': '//span[a[contains(text(),"Used")]]/span/text()',
@@ -111,7 +111,7 @@ class AmazonSpider(CrawlSpider):
                 item[name] = ' '
 
         item['url'] = response.url
-
+        # if '-' in item['any_lowest_price']: item['any_lowest_price'] = item['any_lowest_price'][:item['any_lowest_price'].index(' -')]
         try:  # todo: LinkExtractor pulling some denied site. Don't know why
             item['asin'] = re.search('.*\/dp\/([\w\d]+)\/?.*', response.url).group(1)
         except:

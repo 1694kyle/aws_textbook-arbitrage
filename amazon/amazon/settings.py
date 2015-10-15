@@ -91,21 +91,20 @@ LOG_FOLDER = OUTPUT_BUCKET + '/scraping_logs'
 RESULT_FOLDER = OUTPUT_BUCKET + '/scraping_results'
 
 LOCAL_OUTPUT_DIR = os.path.join(os.environ.get('HOME'), 'Desktop', 'Scraping Results')
-LOCAL_OUTPUT_FILE = os.path.join(LOCAL_OUTPUT_DIR, 'results-{}'.format(date))
+LOCAL_OUTPUT_FILE = os.path.join(LOCAL_OUTPUT_DIR, 'results {}'.format(date))
 if not os.path.isdir(LOCAL_OUTPUT_DIR): os.makedirs(LOCAL_OUTPUT_DIR)
 open(LOCAL_OUTPUT_FILE, 'wb').close()
 
-
-# todo: how does URI export work?
 FEED_URI = 's3://textbook-arbitrage/scraping_results/results-{}.csv'.format(date)
 FEED_FORMAT = 'csv'
 FEED_EXPORT_FIELDS = ['title','asin','price','trade_value','profit','roi,url']
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_KEY')
 
-# LOG_STDOUT = True
-LOG_LEVEL = 'WARNING'
-LOG_FILE = os.path.join(LOCAL_OUTPUT_DIR, 'log-{}'.format(date))
+# LOG_LEVEL = 'WARNING'
+# LOG_FILE = os.path.join(LOCAL_OUTPUT_DIR, 'log {}'.format(date))
+# open(LOG_FILE, 'wb').close()
+
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
 # NOTE: AutoThrottle will honour the standard settings for concurrency and delay

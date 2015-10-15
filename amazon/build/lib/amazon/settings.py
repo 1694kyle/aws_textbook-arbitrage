@@ -9,6 +9,9 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
+import os
+import datetime
+date = datetime.datetime.today().date().strftime('%m-%d-%Y')
 
 BOT_NAME = 'amazon'
 
@@ -19,7 +22,7 @@ NEWSPIDER_MODULE = 'amazon.spiders'
 USER_AGENT = "Mozilla/5.0 (Windows N 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36"
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS=32
+CONCURRENT_REQUESTS = 20
 
 CONCURRENT_ITEMS = 100
 
@@ -29,7 +32,7 @@ CONCURRENT_ITEMS = 100
 #DOWNLOAD_DELAY = 0
 
 # The download delay setting will honor only one of:
-CONCURRENT_REQUESTS_PER_DOMAIN=32
+CONCURRENT_REQUESTS_PER_DOMAIN = 32
 #CONCURRENT_REQUESTS_PER_IP=16
 
 # Disable cookies (enabled by default)
@@ -45,7 +48,7 @@ DEFAULT_REQUEST_HEADERS = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0'
 }
 
-DEPTH_LIMIT = 500
+DEPTH_LIMIT = 100
 # Enable or disable spider middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
@@ -76,37 +79,36 @@ ITEM_PIPELINES = {
     'amazon.pipelines.ProfitablePipeline': 400,
     # 'amazon.pipelines.CheckTradeDataPipeline': 500,
     'amazon.pipelines.LoggedProfitablePipeline': 600,
+    'amazon.pipelines.WriteItemPipeline': 700,
 
 
 }
 
 item_count = 1
 
-# output_folder = r'C:\Users\kbonnet\OneDrive\Textbook Arbitrage'
-#
-# item_file = r'{}\items\scrape_{}.csv'.format(output_folder, datetime.today().date())
-# open(item_file, 'w').close()
-#
-# results_file = r'{}\results\scrape_{}.csv'.format(output_folder, datetime.today().date())
-# open(results_file, 'w').close()
-# csv_file_path = results_file
-#
-# log_file = r'{}\logs\scrape_log_{}.txt'.format(output_folder, datetime.today().date())
-# open(log_file, 'w').close()
-#
-# log_summary_file = r'{}\logs\scrape_log_summary_{}.txt'.format(output_folder, datetime.today().date())
-# open(log_summary_file, 'w').close()
-#
-# LOG_FILE = log_file
-# #}
+OUTPUT_BUCKET = 'textbook-arbitrage'
+LOG_FOLDER = OUTPUT_BUCKET + '/scraping_logs'
+RESULT_FOLDER = OUTPUT_BUCKET + '/scraping_results'
 
-# LOG_STDOUT = True
-LOG_LEVEL = 'WARNING'
+LOCAL_OUTPUT_DIR = os.path.join(os.environ.get('HOME'), 'Desktop', 'Scraping Results')
+LOCAL_OUTPUT_FILE = os.path.join(LOCAL_OUTPUT_DIR, 'results {}'.format(date))
+if not os.path.isdir(LOCAL_OUTPUT_DIR): os.makedirs(LOCAL_OUTPUT_DIR)
+open(LOCAL_OUTPUT_FILE, 'wb').close()
+
+FEED_URI = 's3://textbook-arbitrage/scraping_results/results-{}.csv'.format(date)
+FEED_FORMAT = 'csv'
+FEED_EXPORT_FIELDS = ['title','asin','price','trade_value','profit','roi,url']
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_KEY')
+
+# LOG_LEVEL = 'WARNING'
+# LOG_FILE = os.path.join(LOCAL_OUTPUT_DIR, 'log {}'.format(date))
+# open(LOG_FILE, 'wb').close()
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
 # NOTE: AutoThrottle will honour the standard settings for concurrency and delay
-AUTOTHROTTLE_ENABLED=True
+AUTOTHROTTLE_ENABLED = True
 # The initial download delay
 #AUTOTHROTTLE_START_DELAY=5
 # The maximum download delay to be set in case of high latencies

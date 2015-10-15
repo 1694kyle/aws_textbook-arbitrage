@@ -11,6 +11,7 @@ import scrapy
 class AmazonItem(scrapy.Item):
     title = scrapy.Field()
     asin = scrapy.Field()
+    any_lowest_price = scrapy.Field()
     lowest_used_price1 = scrapy.Field()
     lowest_new_price1 = scrapy.Field()
     lowest_used_price2 = scrapy.Field()

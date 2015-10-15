@@ -7,17 +7,19 @@ import pdb
 import re
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy import signals
+from scrapy.exceptions import CloseSpider
 
 def load_xpaths():
     xpaths = {
-        'title': './/span[@id="productTitle"]/text()',
+        'title': '//span[@id="productTitle"]/text()',
         'asin': '',
-        'lowest_used_price1': './/a[contains(text(),"Used")]/text()[2]',
-        'lowest_new_price1': './/a[contains(text(),"New")]/text()[2]',
-        'lowest_used_price2': './/span[a[contains(text(),"Used")]]/span/text()',
-        'lowest_new_price2': './/span[a[contains(text(),"New")]]/span/text()',
+        'any_lowest_price': '//span[contains(@class, "price") and contains(text(), "$")]/text()[1]',
+        'lowest_used_price1': '//a[contains(text(),"Used")]/text()[2]',
+        'lowest_new_price1': '//a[contains(text(),"New")]/text()[2]',
+        'lowest_used_price2': '//span[a[contains(text(),"Used")]]/span/text()',
+        'lowest_new_price2': '//span[a[contains(text(),"New")]]/span/text()',
         'trade_in_eligible': ' ',
-        'trade_value': './/span[@id="tradeInButton_tradeInValue"]/text()',
+        'trade_value': '//span[@id="tradeInButton_tradeInValue"]/text()',
         'url': ' ',
         'price': ' ',
         'profit': ' ',
@@ -33,32 +35,45 @@ def load_xpaths():
 def build_amzn_link(domain_suffix):
     return 'https://www.amazon.com{}'.format(domain_suffix)
 
+
 def build_abe_link(isbn):
     return 'http://buyback.abebooks.com/cart.aspx?a=add&i={}|0|3&c={}&st=-1'.format(isbn)
 
+
 def build_chegg_link(isbn):
     return 'https://www.chegg.com/sell-textbooks/search?buyback_search={}'.format(isbn)
+
 
 def build_buyback_link(isbn):
     return r'http://www.buybacktextbooks.com/compare/{}'.format(isbn)
 
 
-
 class AmazonSpider(CrawlSpider):
     name = 'amazon'
-    allowed_domains = [r'www.amazon.com', r'buyback.abebooks.com', r'www.buybacktextbooks.com', r'www.chegg.com']
+    allowed_domains = [r'www.amazon.com'] #, r'buyback.abebooks.com', r'www.buybacktextbooks.com', r'www.chegg.com']
     start_urls = [
-        r'http://www.amazon.com/New-Used-Textbooks-Books/b?node=465600'
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_0?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468220&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_1?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468226&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_2?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468204&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_3?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468224&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_4?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468212&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_5?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468206&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_6?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468222&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_7?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468228&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_8?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A684283011&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_9?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468216&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_10?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468214&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
+        r'http://www.amazon.com/s/ref=lp_465600_nr_n_11?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A684300011&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600'
     ]
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5})'
     }
     rules = (
         # inidividual item pages
-        Rule(
-            LinkExtractor(allow=('.+\/dp\/(\w*\d*)\/?',),), # restrict_xpaths=['//div[contains(@id, "result_")]']
-            callback="parse_amzn_item_page",
-            ),
+        # Rule(
+        #     LinkExtractor(allow=('.+\/dp\/(\w*\d*)\/?',), restrict_xpaths=['//div[contains(@id, "result_")]'],), # restrict_xpaths=['//div[contains(@id, "result_")]']
+        #     callback="parse_amzn_item_page",
+        #     ),
         # category refinement and next pages
         Rule(
             LinkExtractor(allow=('.*amazon\.com\/s.*',), restrict_xpaths=['//div[@class="categoryRefinementsSection"]/ul/li/a', '//a[@id="pagnNextLink"]']),
@@ -71,8 +86,21 @@ class AmazonSpider(CrawlSpider):
         self.name = 'amazon'
         self.item_xpaths = load_xpaths()
         self.logged_profitable_items = {}
+        self.close_down = False
+        self.item_count = 0
+
+    def parse_start_url(self, response):
+        sel = Selector(response)
+        result_xpath = sel.xpath('//li[contains(@id, "result_")]')
+        item_links = result_xpath.xpath('.//a[contains(@class, "detail-page")]/@href').extract()
+        for link in item_links:
+            yield Request(link, callback=self.parse_amzn_item_page)
+
+
 
     def parse_amzn_item_page(self, response):
+        if self.close_down:
+            raise CloseSpider(reason='API usage exceeded')
         regex_title = re.compile(r'http://www.amazon.com/(.+)/dp.*')
         sel = Selector(response)
         item = AmazonItem()
@@ -86,8 +114,6 @@ class AmazonSpider(CrawlSpider):
 
         try:  # todo: LinkExtractor pulling some denied site. Don't know why
             item['asin'] = re.search('.*\/dp\/([\w\d]+)\/?.*', response.url).group(1)
-            # print item['asin']
-            # print item['url']
         except:
             yield None
 

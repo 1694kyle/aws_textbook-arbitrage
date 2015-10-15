@@ -9,15 +9,24 @@ from amazon import settings
 # from scrapy.exporters import CsvItemExporter
 
 
+class S3OutputPipeline(object):
+    pass
+
+
+class WriteItemPipeline(object):
+    def process_item(self, item, spider):
+        with open(settings.LOCAL_OUTPUT_FILE, 'a') as f:
+            for field in settings.FEED_EXPORT_FIELDS:
+                f.write('{},'.format(item[field]))
+            f.write('\n')
+
+
 class TradeEligiblePipeline(object):
 
     def process_item(self, item, spider):
         if item['trade_in_eligible']: # or item.get('chegg_trade_value') or item.get('buyback_trade_value'):
             if not item['trade_value'] == ' ': item['trade_value'] = float(item['trade_value'])
             return item
-        #
-        # elif item['trade_value'] == ' ':
-        #     raise DropItem('\tNo Trade Value: {}'.format(item['asin']))
         else:
             raise DropItem('Not Trade Eligible: {}'.format(item['asin']))
 
@@ -27,7 +36,7 @@ class HasUsedPipeline(object):
         if item['lowest_used_price1'] == ' ' and item['lowest_used_price2'] == ' ':
             raise DropItem('\tNo Used: {}'.format(item['asin']))
         else:
-            prices = ['lowest_used_price1', 'lowest_used_price2', 'lowest_new_price1', 'lowest_new_price2']
+            prices = ['lowest_used_price1', 'lowest_used_price2', 'lowest_new_price1', 'lowest_new_price2', 'any_lowest_price']
             price_values = []
             for price in prices:
                 try:
@@ -43,16 +52,18 @@ class ProfitablePipeline(object):
     def process_item(self, item, spider):
         profitable, item = check_profit(item)
         if profitable:
-            print 'Profitable: {}'.format(item['asin'])
+            print 'Profitable: {0}\n\tProfit - {1}\n\tCost - {2}\n\tROI - {3}'.format(item['asin'], item['profit'], item['price'], item['roi'])
             return item
         else:
             raise DropItem('\tNot Profitable: {}'.format(item['asin']))
 
 
 class LoggedProfitablePipeline(object):
+    def __init__(self):
+        self.logged_profitable_items = []
     def process_item(self, item, spider):
-        if item['asin'] not in spider.logged_profitable_items:
-            spider.logged_profitable_items[item['asin']] = item
+        if item['asin'] not in self.logged_profitable_items:
+            self.logged_profitable_items[item['asin']] = item
             print 'New Item Logged: {}'.format(item['asin'])
             return item
         # elif item['asin'] in spider.logged_profitable_items:
@@ -67,11 +78,18 @@ class LoggedProfitablePipeline(object):
 
 
 class InitialPipeline(object):
+    def __init__(self):
+        self.ids_seen = set()
 
     def process_item(self, item, spider):
-        # spider.crawler.stats.inc_value('item_count')
-        return item
-
+        # spider.item_count += 1
+        # if spider.item_count > 2:
+        #     spider.close_down = True
+        if item['asin'] in self.ids_seen:
+            raise DropItem("Duplicate item found: %s" % item)
+        else:
+            self.ids_seen.add(item['asin'])
+            return item
 
 def check_profit(item):
     price = item['price']

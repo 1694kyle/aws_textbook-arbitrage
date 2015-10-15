@@ -9,6 +9,9 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
+import os
+import datetime
+date = datetime.datetime.today().date()
 
 BOT_NAME = 'amazon'
 
@@ -82,31 +85,25 @@ ITEM_PIPELINES = {
 
 item_count = 1
 
-# output_folder = r'C:\Users\kbonnet\OneDrive\Textbook Arbitrage'
-#
-# item_file = r'{}\items\scrape_{}.csv'.format(output_folder, datetime.today().date())
-# open(item_file, 'w').close()
-#
-# results_file = r'{}\results\scrape_{}.csv'.format(output_folder, datetime.today().date())
-# open(results_file, 'w').close()
-# csv_file_path = results_file
-#
-# log_file = r'{}\logs\scrape_log_{}.txt'.format(output_folder, datetime.today().date())
-# open(log_file, 'w').close()
-#
-# log_summary_file = r'{}\logs\scrape_log_summary_{}.txt'.format(output_folder, datetime.today().date())
-# open(log_summary_file, 'w').close()
-#
-# LOG_FILE = log_file
-# #}
+OUTPUT_BUCKET = 'textbook-arbitrage'
+LOG_FOLDER = OUTPUT_BUCKET + '/scraping_logs'
+RESULT_FOLDER = OUTPUT_BUCKET + '/scraping_results'
+
+
+# todo: how does URI export work?
+FEED_URI = 's3://textbook-arbitrage/scraping_results/results-{}.csv'.format(date)
+FEED_FORMAT = 'csv'
+FEED_EXPORT_FIELDS = ['title','asin','price','trade_value','profit','roi,url']
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_KEY')
 
 # LOG_STDOUT = True
-LOG_LEVEL = 'WARNING'
+# LOG_LEVEL = 'WARNING'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
 # NOTE: AutoThrottle will honour the standard settings for concurrency and delay
-AUTOTHROTTLE_ENABLED=True
+AUTOTHROTTLE_ENABLED = True
 # The initial download delay
 #AUTOTHROTTLE_START_DELAY=5
 # The maximum download delay to be set in case of high latencies

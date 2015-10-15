@@ -7,6 +7,7 @@ import pdb
 import re
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy import signals
+from scrapy.exceptions import CloseSpider
 
 def load_xpaths():
     xpaths = {
@@ -71,8 +72,12 @@ class AmazonSpider(CrawlSpider):
         self.name = 'amazon'
         self.item_xpaths = load_xpaths()
         self.logged_profitable_items = {}
+        self.close_down = False
+        self.item_count = 0
 
     def parse_amzn_item_page(self, response):
+        if self.close_down:
+            raise CloseSpider(reason='API usage exceeded')
         regex_title = re.compile(r'http://www.amazon.com/(.+)/dp.*')
         sel = Selector(response)
         item = AmazonItem()

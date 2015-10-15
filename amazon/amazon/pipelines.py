@@ -9,15 +9,16 @@ from amazon import settings
 # from scrapy.exporters import CsvItemExporter
 
 
+class S3OutputPipeline(object):
+    pass
+
+
 class TradeEligiblePipeline(object):
 
     def process_item(self, item, spider):
         if item['trade_in_eligible']: # or item.get('chegg_trade_value') or item.get('buyback_trade_value'):
             if not item['trade_value'] == ' ': item['trade_value'] = float(item['trade_value'])
             return item
-        #
-        # elif item['trade_value'] == ' ':
-        #     raise DropItem('\tNo Trade Value: {}'.format(item['asin']))
         else:
             raise DropItem('Not Trade Eligible: {}'.format(item['asin']))
 
@@ -71,7 +72,9 @@ class LoggedProfitablePipeline(object):
 class InitialPipeline(object):
 
     def process_item(self, item, spider):
-        # spider.crawler.stats.inc_value('item_count')
+        # spider.item_count += 1
+        # if spider.item_count > 2:
+        #     spider.close_down = True
         return item
 
 

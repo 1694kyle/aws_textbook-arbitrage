@@ -11,14 +11,15 @@ from scrapy.exceptions import CloseSpider
 
 def load_xpaths():
     xpaths = {
-        'title': './/span[@id="productTitle"]/text()',
+        'title': '//span[@id="productTitle"]/text()',
         'asin': '',
-        'lowest_used_price1': './/a[contains(text(),"Used")]/text()[2]',
-        'lowest_new_price1': './/a[contains(text(),"New")]/text()[2]',
-        'lowest_used_price2': './/span[a[contains(text(),"Used")]]/span/text()',
-        'lowest_new_price2': './/span[a[contains(text(),"New")]]/span/text()',
+        'any_lowest_price': '//span[contains(@class, "price") and contains(text(), "$")]/text()[1]',
+        'lowest_used_price1': '//a[contains(text(),"Used")]/text()[2]',
+        'lowest_new_price1': '//a[contains(text(),"New")]/text()[2]',
+        'lowest_used_price2': '//span[a[contains(text(),"Used")]]/span/text()',
+        'lowest_new_price2': '//span[a[contains(text(),"New")]]/span/text()',
         'trade_in_eligible': ' ',
-        'trade_value': './/span[@id="tradeInButton_tradeInValue"]/text()',
+        'trade_value': '//span[@id="tradeInButton_tradeInValue"]/text()',
         'url': ' ',
         'price': ' ',
         'profit': ' ',

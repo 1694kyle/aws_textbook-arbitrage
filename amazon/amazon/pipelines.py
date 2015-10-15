@@ -36,7 +36,7 @@ class HasUsedPipeline(object):
         if item['lowest_used_price1'] == ' ' and item['lowest_used_price2'] == ' ':
             raise DropItem('\tNo Used: {}'.format(item['asin']))
         else:
-            prices = ['lowest_used_price1', 'lowest_used_price2', 'lowest_new_price1', 'lowest_new_price2']
+            prices = ['lowest_used_price1', 'lowest_used_price2', 'lowest_new_price1', 'lowest_new_price2', 'any_lowest_price']
             price_values = []
             for price in prices:
                 try:

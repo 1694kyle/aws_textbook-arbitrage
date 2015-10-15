@@ -78,13 +78,18 @@ class LoggedProfitablePipeline(object):
 
 
 class InitialPipeline(object):
+    def __init__(self):
+        self.ids_seen = set()
 
     def process_item(self, item, spider):
         # spider.item_count += 1
         # if spider.item_count > 2:
         #     spider.close_down = True
-        return item
-
+        if item['asin'] in self.ids_seen:
+            raise DropItem("Duplicate item found: %s" % item)
+        else:
+            self.ids_seen.add(item['asin'])
+            return item
 
 def check_profit(item):
     price = item['price']

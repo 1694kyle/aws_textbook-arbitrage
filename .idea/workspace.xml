@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3fd07623-7d15-41e0-890a-ff2b5a466138" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/amazon/amazon/pipelines.py" afterPath="$PROJECT_DIR$/amazon/amazon/pipelines.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/amazon/amazon/settings.py" afterPath="$PROJECT_DIR$/amazon/amazon/settings.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="scraping.iws" />
@@ -56,10 +56,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pipelines.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="pipelines.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/amazon/amazon/pipelines.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.83809525">
+            <state vertical-scroll-proportion="0.0">
               <caret line="95" column="50" selection-start-line="95" selection-start-column="50" selection-end-line="95" selection-end-column="50" />
               <folding>
                 <element signature="e#192#230#0" expanded="true" />
@@ -102,11 +102,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="settings.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/amazon/amazon/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="102" column="52" selection-start-line="102" selection-start-column="52" selection-end-line="102" selection-end-column="52" />
+            <state vertical-scroll-proportion="0.4952381">
+              <caret line="105" column="19" selection-start-line="105" selection-start-column="19" selection-end-line="105" selection-end-column="19" />
               <folding>
                 <element signature="e#431#440#0" expanded="true" />
               </folding>
@@ -143,10 +143,10 @@
         <option value="$PROJECT_DIR$/amazon/delete.py" />
         <option value="$PROJECT_DIR$/amazon/amazon/spiders/test.txt" />
         <option value="$PROJECT_DIR$/amazon/amazon/spiders/s3.py" />
-        <option value="$PROJECT_DIR$/amazon/amazon/settings.py" />
         <option value="$PROJECT_DIR$/amazon/amazon/items.py" />
         <option value="$PROJECT_DIR$/amazon/amazon/spiders/amazon_spider.py" />
         <option value="$PROJECT_DIR$/amazon/amazon/pipelines.py" />
+        <option value="$PROJECT_DIR$/amazon/amazon/settings.py" />
       </list>
     </option>
   </component>
@@ -269,6 +269,11 @@
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="recentsLimit" value="5" />
     <property name="FullScreen" value="false" />
+  </component>
+  <component name="Push.Settings">
+    <force-push-targets>
+      <force-push-target remote-path="origin" branch="master" />
+    </force-push-targets>
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -579,7 +584,19 @@
       <option name="project" value="LOCAL" />
       <updated>1444926760608</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="init&#10;">
+      <created>1444927224628</created>
+      <option name="number" value="00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1444927224628</updated>
+    </task>
+    <task id="LOCAL-00012" summary="init&#10;">
+      <created>1444927248459</created>
+      <option name="number" value="00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1444927248459</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1052,16 +1069,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/amazon/amazon/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="102" column="52" selection-start-line="102" selection-start-column="52" selection-end-line="102" selection-end-column="52" />
-          <folding>
-            <element signature="e#431#440#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/amazon/amazon/items.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1082,10 +1089,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/amazon/amazon/pipelines.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.83809525">
+        <state vertical-scroll-proportion="0.0">
           <caret line="95" column="50" selection-start-line="95" selection-start-column="50" selection-end-line="95" selection-end-column="50" />
           <folding>
             <element signature="e#192#230#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/amazon/amazon/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4952381">
+          <caret line="105" column="19" selection-start-line="105" selection-start-column="19" selection-end-line="105" selection-end-column="19" />
+          <folding>
+            <element signature="e#431#440#0" expanded="true" />
           </folding>
         </state>
       </provider>

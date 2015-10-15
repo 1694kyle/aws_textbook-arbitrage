@@ -6,6 +6,7 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 from scrapy.exceptions import DropItem
 from amazon import settings
+import logging
 # from scrapy.exporters import CsvItemExporter
 
 
@@ -53,6 +54,7 @@ class ProfitablePipeline(object):
         profitable, item = check_profit(item)
         if profitable:
             print 'Profitable: {0}\n\tProfit - {1}\n\tCost - {2}\n\tROI - {3}'.format(item['asin'], item['profit'], item['price'], item['roi'])
+            logging.ERROR('Profitable: {0}\n\tProfit - {1}\n\tCost - {2}\n\tROI - {3}'.format(item['asin'], item['profit'], item['price'], item['roi']))
             return item
         else:
             raise DropItem('\tNot Profitable: {}'.format(item['asin']))
@@ -63,8 +65,7 @@ class LoggedProfitablePipeline(object):
         self.logged_profitable_items = []
     def process_item(self, item, spider):
         if item['asin'] not in self.logged_profitable_items:
-            self.logged_profitable_items[item['asin']] = item
-            print 'New Item Logged: {}'.format(item['asin'])
+            self.logged_profitable_items.append(item['asin'])
             return item
         # elif item['asin'] in spider.logged_profitable_items:
         #     if spider.logged_profitable_items[item['asin']]['trade_value'] != item['trade_value']:

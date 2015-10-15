@@ -97,11 +97,11 @@ open(LOCAL_OUTPUT_FILE, 'wb').close()
 
 FEED_URI = 's3://textbook-arbitrage/scraping_results/results-{}.csv'.format(date)
 FEED_FORMAT = 'csv'
-FEED_EXPORT_FIELDS = ['title','asin','price','trade_value','profit','roi,url']
+FEED_EXPORT_FIELDS = ['title', 'asin', 'price', 'trade_value', 'profit', 'roi', 'url']
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_KEY')
 
-LOG_LEVEL = 'WARNING'
+LOG_LEVEL = 'ERROR'
 LOG_FILE = os.path.join(LOCAL_OUTPUT_DIR, 'log {}'.format(date))
 open(LOG_FILE, 'wb').close()
 

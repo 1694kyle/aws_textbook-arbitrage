@@ -70,10 +70,10 @@ class AmazonSpider(CrawlSpider):
     }
     rules = (
         # inidividual item pages
-        # Rule(
-        #     LinkExtractor(allow=('.+\/dp\/(\w*\d*)\/?',), restrict_xpaths=['//div[contains(@id, "result_")]'],), # restrict_xpaths=['//div[contains(@id, "result_")]']
-        #     callback="parse_amzn_item_page",
-        #     ),
+        Rule(
+            LinkExtractor(allow=('.+\/dp\/(\w*\d*)\/?',), restrict_xpaths=['//li[contains(@id, "result_")]'],), # restrict_xpaths=['//div[contains(@id, "result_")]']
+            callback="parse_amzn_item_page",
+            ),
         # category refinement and next pages
         Rule(
             LinkExtractor(allow=('.*amazon\.com\/s.*',), restrict_xpaths=['//div[@class="categoryRefinementsSection"]/ul/li/a', '//a[@id="pagnNextLink"]']),
@@ -89,12 +89,12 @@ class AmazonSpider(CrawlSpider):
         self.close_down = False
         self.item_count = 0
 
-    def parse_start_url(self, response):
-        sel = Selector(response)
-        result_xpath = sel.xpath('//li[contains(@id, "result_")]')
-        item_links = result_xpath.xpath('.//a[contains(@class, "detail-page")]/@href').extract()
-        for link in item_links:
-            yield Request(link, callback=self.parse_amzn_item_page)
+    # def parse_start_url(self, response):
+    #     sel = Selector(response)
+    #     result_xpath = sel.xpath('//li[contains(@id, "result_")]')
+    #     item_links = result_xpath.xpath('.//a[contains(@class, "detail-page")]/@href').extract()
+    #     for link in item_links:
+    #         yield Request(link, callback=self.parse_amzn_item_page)
 
 
 

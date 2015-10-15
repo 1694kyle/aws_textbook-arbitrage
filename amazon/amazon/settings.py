@@ -11,7 +11,7 @@
 
 import os
 import datetime
-date = datetime.datetime.today().date()
+date = datetime.datetime.today().date().strftime('%m-%d-%Y')
 
 BOT_NAME = 'amazon'
 
@@ -79,6 +79,7 @@ ITEM_PIPELINES = {
     'amazon.pipelines.ProfitablePipeline': 400,
     # 'amazon.pipelines.CheckTradeDataPipeline': 500,
     'amazon.pipelines.LoggedProfitablePipeline': 600,
+    'amazon.pipelines.WriteItemPipeline': 700,
 
 
 }
@@ -88,6 +89,11 @@ item_count = 1
 OUTPUT_BUCKET = 'textbook-arbitrage'
 LOG_FOLDER = OUTPUT_BUCKET + '/scraping_logs'
 RESULT_FOLDER = OUTPUT_BUCKET + '/scraping_results'
+
+LOCAL_OUTPUT_DIR = os.path.join(os.environ.get('HOME'), 'Desktop', 'Scraping Results')
+LOCAL_OUTPUT_FILE = os.path.join(LOCAL_OUTPUT_DIR, 'results-{}'.format(date))
+if not os.path.isdir(LOCAL_OUTPUT_DIR): os.makedirs(LOCAL_OUTPUT_DIR)
+open(LOCAL_OUTPUT_FILE, 'wb').close()
 
 
 # todo: how does URI export work?

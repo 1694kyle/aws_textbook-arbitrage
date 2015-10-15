@@ -13,6 +13,14 @@ class S3OutputPipeline(object):
     pass
 
 
+class WriteItemPipeline(object):
+    def process_item(self, item, spider):
+        with open(settings.LOCAL_OUTPUT_FILE, 'a') as f:
+            for field in settings.FEED_EXPORT_FIELDS:
+                f.write('{},'.format(item[field]))
+            f.write('\n')
+
+
 class TradeEligiblePipeline(object):
 
     def process_item(self, item, spider):

@@ -80,6 +80,20 @@ class LoggedProfitablePipeline(object):
         else:
             raise DropItem('\tAlready Logged Profitable: {}'.format(item['asin']))
 
+class DynamoDBPipeline(object):
+    # todo: get this set up. possible to store scraped items for quicker searching
+    def process_item(self, item, spider):
+        return item
+
+
+class WriteItemPipeline(object):
+    def process_item(self, item, spider):
+        with open(settings.LOCAL_OUTPUT_FILE, 'a') as f:
+            for field in settings.FEED_EXPORT_FIELDS:
+                f.write('{},'.format(item[field]))
+            f.write('\n')
+
+
 
 def check_profit(item):
     price = item['price']
@@ -105,18 +119,9 @@ def check_profit(item):
         return False, item
 
 
-class DynamoDBPipeline(object):
-    # todo: get this set up. possible to store scraped items for quicker searching
-
-    pass
 
 
-class WriteItemPipeline(object):
-    def process_item(self, item, spider):
-        with open(settings.LOCAL_OUTPUT_FILE, 'a') as f:
-            for field in settings.FEED_EXPORT_FIELDS:
-                f.write('{},'.format(item[field]))
-            f.write('\n')
+
 
 # tood: look up each profitable item and see if desired seller available and what price
 # todo: so desired_price, desired_profit, desired_roi

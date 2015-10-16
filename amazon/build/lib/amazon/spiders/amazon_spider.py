@@ -89,15 +89,6 @@ class AmazonSpider(CrawlSpider):
         self.close_down = False
         self.item_count = 0
 
-    # def parse_start_url(self, response):
-    #     sel = Selector(response)
-    #     result_xpath = sel.xpath('//li[contains(@id, "result_")]')
-    #     item_links = result_xpath.xpath('.//a[contains(@class, "detail-page")]/@href').extract()
-    #     for link in item_links:
-    #         yield Request(link, callback=self.parse_amzn_item_page)
-
-
-
     def parse_amzn_item_page(self, response):
         if self.close_down:
             raise CloseSpider(reason='API usage exceeded')
@@ -112,11 +103,6 @@ class AmazonSpider(CrawlSpider):
 
         item['url'] = response.url
         # if '-' in item['any_lowest_price']: item['any_lowest_price'] = item['any_lowest_price'][:item['any_lowest_price'].index(' -')]
-        try:  # todo: LinkExtractor pulling some denied site. Don't know why
-            item['asin'] = re.search('.*\/dp\/([\w\d]+)\/?.*', response.url).group(1)
-        except:
-            yield None
-
         if item['title'] == ' ':
             try:
                 item['title'] = regex_title.match(response.url).groups()[0].replace('-', ' ')
@@ -129,6 +115,7 @@ class AmazonSpider(CrawlSpider):
             item['trade_in_eligible'] = False
 
         ### check other trade sites ###
+        #todo: work on these later
         # if item['isbn13'] != ' ':
         #     buyback_url = build_buyback_link(item['isbn13'].replace('-', ''))
         #     chegg_url = build_chegg_link(item['isbn13'].replace('-', ''))

@@ -15,9 +15,9 @@ class InitialPipeline(object):
         self.ids_seen = set()
 
     def process_item(self, item, spider):
-        spider.item_count += 1
-        if spider.item_count > 10:
-            spider.close_down = True
+        # spider.item_count += 1
+        # if spider.item_count > 10:
+        #     spider.close_down = True
         if item['asin'] in self.ids_seen:
             raise DropItem("Duplicate item found: %s" % item)
         else:

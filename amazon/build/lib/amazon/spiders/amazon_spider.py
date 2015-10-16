@@ -8,6 +8,7 @@ import re
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy import signals
 from scrapy.exceptions import CloseSpider
+import logging
 
 def load_xpaths():
     xpaths = {
@@ -65,21 +66,28 @@ class AmazonSpider(CrawlSpider):
         r'http://www.amazon.com/s/ref=lp_465600_nr_n_10?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A468214&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600',
         r'http://www.amazon.com/s/ref=lp_465600_nr_n_11?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%212349030011%2Cn%3A465600%2Cn%3A684300011&bbn=465600&ie=UTF8&qid=1444928100&rnid=465600'
     ]
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5})'
-    }
+
     rules = (
         # inidividual item pages
         Rule(
-            LinkExtractor(allow=('.+\/dp\/([\w\d]*).*s=books.*',), restrict_xpaths=['//li[contains(@id, "result_")]'],), # restrict_xpaths=['//div[contains(@id, "result_")]']
+            LinkExtractor(
+                allow=('.+\/dp\/([\w\d]*).*s=books.*',),
+                restrict_xpaths=['//li[contains(@id, "result_")]'],
+            ),
             callback="parse_amzn_item_page",
             ),
         # category refinement and next pages
         Rule(
-            LinkExtractor(allow=('.*amazon\.com\/s.*',), restrict_xpaths=['//div[@class="categoryRefinementsSection"]/ul/li/a', '//a[@id="pagnNextLink"]']),
+            LinkExtractor(
+                allow=('.*amazon\.com\/s.*',),
+                restrict_xpaths=['//div[@class="categoryRefinementsSection"]/ul/li/a', '//a[@id="pagnNextLink"]']),
             follow=True,
+            callback='parse_result_page'
             ),
+
     )
+
+    # todo: try parse_search_page and yield requests for item pages. Not sure why crawling tons of pages with no items
 
     def __init__(self, *args, **kwargs):
         super(AmazonSpider, self).__init__(*args, **kwargs)
@@ -88,6 +96,24 @@ class AmazonSpider(CrawlSpider):
         self.logged_profitable_items = {}
         self.close_down = False
         self.item_count = 0
+        self.ids_seen = set()
+        self.visited_categories = []
+
+    def parse_result_page(self, response):
+        sel = Selector(response)
+        li_count = sel.xpath('count(//div[@class="categoryRefinementsSection"]/ul//li)').extract()[0]
+        category_xpath = '//div[@class="categoryRefinementsSection"]/ul/li[strong]/strong/text()'
+
+        category = sel.xpath(category_xpath).extract()[0]
+
+        if category in self.visited_categories:
+            pass
+        else:
+            logging.error('Searching {} section with {} subsections'.format(category, int(float(li_count)) - 3))
+            self.visited_categories.append(category)
+
+        yield Request(response.url)
+
 
     def parse_amzn_item_page(self, response):
         if self.close_down:

@@ -11,17 +11,19 @@ import logging
 
 
 class InitialPipeline(object):
-    def __init__(self):
-        self.ids_seen = set()
+    # def __init__(self):
+    #     self.ids_seen = set()
 
     def process_item(self, item, spider):
         # spider.item_count += 1
         # if spider.item_count > 10:
         #     spider.close_down = True
-        if item['asin'] in self.ids_seen:
+        if item['asin'] in spider.ids_seen:
             raise DropItem("Duplicate item found: {}" .format(item['asin']))
         else:
-            self.ids_seen.add(item['asin'])
+            spider.ids_seen.add(item['asin'])
+            with open(settings.LOCAL_ITEM_LOG, 'a') as f:
+                f.write('{}\n'.format(item['asin']))
             return item
 
 
@@ -56,7 +58,10 @@ class ProfitablePipeline(object):
         profitable, item = check_profit(item)
         if profitable:
             print 'Profitable: {0}\n\tProfit - {1}\n\tCost - {2}\n\tROI - {3}'.format(item['asin'], item['profit'], item['price'], item['roi'])
-            logging.error('Profitable: {0}\n\tProfit - {1}\n\tCost - {2}\n\tROI - {3}'.format(item['asin'], item['profit'], item['price'], item['roi']))
+            try:
+                logging.error('Profitable: {0}\n\tProfit - {1}\n\tCost - {2}\n\tROI - {3}'.format(item['asin'], item['profit'], item['price'], item['roi']))
+            except:
+                pass
             return item
         else:
             raise DropItem('\tNot Profitable: {}'.format(item['asin']))
@@ -70,13 +75,6 @@ class LoggedProfitablePipeline(object):
         if item['asin'] not in self.logged_profitable_items:
             self.logged_profitable_items.append(item['asin'])
             return item
-        # elif item['asin'] in spider.logged_profitable_items:
-        #     if spider.logged_profitable_items[item['asin']]['trade_value'] != item['trade_value']:
-        #         spider.logged_profitable_items[item['asin']] = item  # updating item
-        #         print 'Item Updated: {}'.format(item['asin'])
-        #         return item
-        #     else:
-        #         raise DropItem('\tAlready Logged Profitable: {}'.format(item['asin']))
         else:
             raise DropItem('\tAlready Logged Profitable: {}'.format(item['asin']))
 
@@ -123,5 +121,5 @@ def check_profit(item):
 
 
 
-# tood: look up each profitable item and see if desired seller available and what price
+# todo: look up each profitable item and see if desired seller available and what price
 # todo: so desired_price, desired_profit, desired_roi

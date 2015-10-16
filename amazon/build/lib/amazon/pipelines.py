@@ -19,7 +19,7 @@ class InitialPipeline(object):
         # if spider.item_count > 10:
         #     spider.close_down = True
         if item['asin'] in self.ids_seen:
-            raise DropItem("Duplicate item found: %s" % item)
+            raise DropItem("Duplicate item found: {}" .format(item['asin']))
         else:
             self.ids_seen.add(item['asin'])
             return item

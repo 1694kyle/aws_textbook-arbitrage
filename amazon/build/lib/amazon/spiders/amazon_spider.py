@@ -71,7 +71,7 @@ class AmazonSpider(CrawlSpider):
     rules = (
         # inidividual item pages
         Rule(
-            LinkExtractor(allow=('.+\/dp\/(\w*\d*)\/?',), restrict_xpaths=['//li[contains(@id, "result_")]'],), # restrict_xpaths=['//div[contains(@id, "result_")]']
+            LinkExtractor(allow=('.+\/dp\/([\w\d]*).*s=books.*',), restrict_xpaths=['//li[contains(@id, "result_")]'],), # restrict_xpaths=['//div[contains(@id, "result_")]']
             callback="parse_amzn_item_page",
             ),
         # category refinement and next pages
@@ -103,6 +103,12 @@ class AmazonSpider(CrawlSpider):
 
         item['url'] = response.url
         # if '-' in item['any_lowest_price']: item['any_lowest_price'] = item['any_lowest_price'][:item['any_lowest_price'].index(' -')]
+
+        try:  # todo: LinkExtractor pulling some denied site. Don't know why
+            item['asin'] = re.search('.*\/dp\/([\w\d]+).*', response.url).group(1)
+        except:
+            yield None
+
         if item['title'] == ' ':
             try:
                 item['title'] = regex_title.match(response.url).groups()[0].replace('-', ' ')

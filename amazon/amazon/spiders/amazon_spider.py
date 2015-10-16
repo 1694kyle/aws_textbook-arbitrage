@@ -71,7 +71,7 @@ class AmazonSpider(CrawlSpider):
     rules = (
         # inidividual item pages
         Rule(
-            LinkExtractor(allow=('.+\/dp\/([\w\d]*).*&s=books.*',), restrict_xpaths=['//li[contains(@id, "result_")]'],), # restrict_xpaths=['//div[contains(@id, "result_")]']
+            LinkExtractor(allow=('.+\/dp\/([\w\d]*).*s=books.*',), restrict_xpaths=['//li[contains(@id, "result_")]'],), # restrict_xpaths=['//div[contains(@id, "result_")]']
             callback="parse_amzn_item_page",
             ),
         # category refinement and next pages

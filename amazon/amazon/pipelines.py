@@ -56,7 +56,10 @@ class ProfitablePipeline(object):
         profitable, item = check_profit(item)
         if profitable:
             print 'Profitable: {0}\n\tProfit - {1}\n\tCost - {2}\n\tROI - {3}'.format(item['asin'], item['profit'], item['price'], item['roi'])
-            logging.error('Profitable: {0}\n\tProfit - {1}\n\tCost - {2}\n\tROI - {3}'.format(item['asin'], item['profit'], item['price'], item['roi']))
+            try:
+                logging.error('Profitable: {0}\n\tProfit - {1}\n\tCost - {2}\n\tROI - {3}'.format(item['asin'], item['profit'], item['price'], item['roi']))
+            except:
+                pass
             return item
         else:
             raise DropItem('\tNot Profitable: {}'.format(item['asin']))

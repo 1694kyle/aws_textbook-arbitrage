@@ -78,8 +78,8 @@ ITEM_PIPELINES = {
     'amazon.pipelines.PricePipeline': 300,
     'amazon.pipelines.ProfitablePipeline': 400,
     'amazon.pipelines.LoggedProfitablePipeline': 600,
-    'amazon.pipelines.WriteItemPipeline': 700,
-    'amazon.pipelines.DynamoDBPipeline': 800,
+    # 'amazon.pipelines.WriteItemPipeline': 700,
+    # 'amazon.pipelines.DynamoDBPipeline': 800,
 }
 
 item_count = 1

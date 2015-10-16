@@ -81,6 +81,8 @@ class AmazonSpider(CrawlSpider):
             ),
     )
 
+    # todo: try parse_search_page and yield requests for item pages. Not sure why crawling tons of pages with no items
+
     def __init__(self, *args, **kwargs):
         super(AmazonSpider, self).__init__(*args, **kwargs)
         self.name = 'amazon'

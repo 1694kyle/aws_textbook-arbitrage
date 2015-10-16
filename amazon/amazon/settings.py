@@ -48,7 +48,7 @@ DEFAULT_REQUEST_HEADERS = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0'
 }
 
-DEPTH_LIMIT = 100
+DEPTH_LIMIT = 500
 # Enable or disable spider middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
@@ -75,13 +75,11 @@ DEPTH_LIMIT = 100
 ITEM_PIPELINES = {
     'amazon.pipelines.InitialPipeline': 100,
     'amazon.pipelines.TradeEligiblePipeline': 200,
-    'amazon.pipelines.HasUsedPipeline': 300,
+    'amazon.pipelines.PricePipeline': 300,
     'amazon.pipelines.ProfitablePipeline': 400,
-    # 'amazon.pipelines.CheckTradeDataPipeline': 500,
     'amazon.pipelines.LoggedProfitablePipeline': 600,
     'amazon.pipelines.WriteItemPipeline': 700,
-
-
+    'amazon.pipelines.DynamoDBPipeline': 800,
 }
 
 item_count = 1
@@ -95,15 +93,15 @@ LOCAL_OUTPUT_FILE = os.path.join(LOCAL_OUTPUT_DIR, 'results {}'.format(date))
 if not os.path.isdir(LOCAL_OUTPUT_DIR): os.makedirs(LOCAL_OUTPUT_DIR)
 open(LOCAL_OUTPUT_FILE, 'wb').close()
 
-FEED_URI = 's3://textbook-arbitrage/scraping_results/results-{}.csv'.format(date)
-FEED_FORMAT = 'csv'
-FEED_EXPORT_FIELDS = ['title', 'asin', 'price', 'trade_value', 'profit', 'roi', 'url']
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_KEY')
+# FEED_URI = 's3://textbook-arbitrage/scraping_results/results-{}.csv'.format(date)
+# FEED_FORMAT = 'csv'
+# FEED_EXPORT_FIELDS = ['title', 'asin', 'price', 'trade_value', 'profit', 'roi', 'url']
+# AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY')
+# AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_KEY')
 
-LOG_LEVEL = 'ERROR'
-LOG_FILE = os.path.join(LOCAL_OUTPUT_DIR, 'log {}'.format(date))
-open(LOG_FILE, 'wb').close()
+# LOG_LEVEL = 'ERROR'
+# LOG_FILE = os.path.join(LOCAL_OUTPUT_DIR, 'log {}'.format(date))
+# open(LOG_FILE, 'wb').close()
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html

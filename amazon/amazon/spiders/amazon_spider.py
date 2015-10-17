@@ -104,7 +104,10 @@ class AmazonSpider(CrawlSpider):
         li_count = sel.xpath('count(//div[@class="categoryRefinementsSection"]/ul//li)').extract()[0]
         category_xpath = '//div[@class="categoryRefinementsSection"]/ul/li[strong]/strong/text()'
 
-        category = sel.xpath(category_xpath).extract()[0]
+        try:
+            category = sel.xpath(category_xpath).extract()[0]
+        except:
+            category = 'Not Found'
 
         if category in self.visited_categories:
             pass

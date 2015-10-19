@@ -22,8 +22,8 @@ class InitialPipeline(object):
             raise DropItem("Duplicate item found: {}" .format(item['asin']))
         else:
             spider.ids_seen.add(item['asin'])
-            with open(settings.LOCAL_ITEM_LOG, 'a') as f:
-                f.write('{}\n'.format(item['asin']))
+            # with open(settings.LOCAL_ITEM_LOG, 'a') as f:
+            #     f.write('{}\n'.format(item['asin']))
             return item
 
 
@@ -57,7 +57,7 @@ class ProfitablePipeline(object):
     def process_item(self, item, spider):
         profitable, item = check_profit(item)
         if profitable:
-            print 'Profitable: {0}\n\tProfit - {1}\n\tCost - {2}\n\tROI - {3}'.format(item['asin'], item['profit'], item['price'], item['roi'])
+            # print 'Profitable: {0}\n\tProfit - {1}\n\tCost - {2}\n\tROI - {3}'.format(item['asin'], item['profit'], item['price'], item['roi'])
             try:
                 logging.error('Profitable: {0}\n\tProfit - {1}\n\tCost - {2}\n\tROI - {3}'.format(item['asin'], item['profit'], item['price'], item['roi']))
             except:
@@ -100,12 +100,12 @@ def check_profit(item):
     trade_value = item.get('trade_value', 0)
     max_trade = max(chegg_value, buyback_value, trade_value)
     # find trade link
-    if chegg_value == max_trade:
-        item['trade_link'] = item['chegg_trade_link']
-    elif buyback_value == max_trade:
-        item['trade_link'] = item['buyback_trade_link']
-    else:
-        item['trade_link'] = item['url']
+    # if chegg_value == max_trade:
+    #     item['trade_link'] = item['chegg_trade_link']
+    # elif buyback_value == max_trade:
+    #     item['trade_link'] = item['buyback_trade_link']
+    # else:
+    #     item['trade_link'] = item['url']
 
     true_profit = (max_trade - price) - 3.99  # account for shipping
     if true_profit > 10:

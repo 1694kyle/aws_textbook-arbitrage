@@ -104,16 +104,18 @@ class AmazonSpider(CrawlSpider):
         li_count = sel.xpath('count(//div[@class="categoryRefinementsSection"]/ul//li)').extract()[0]
         category_xpath = '//div[@class="categoryRefinementsSection"]/ul/li[strong]/strong/text()'
 
-        category = sel.xpath(category_xpath).extract()[0]
+        try:
+            category = sel.xpath(category_xpath).extract()[0]
+        except:
+            category = 'Not Found'
 
         if category in self.visited_categories:
             pass
         else:
-            logging.error('Searching {} section with {} subsections'.format(category, int(float(li_count)) - 3))
+            logging.info('Searching {} section with {} subsections'.format(category, int(float(li_count)) - 3))
             self.visited_categories.append(category)
 
         yield Request(response.url)
-
 
     def parse_amzn_item_page(self, response):
         if self.close_down:
@@ -131,7 +133,7 @@ class AmazonSpider(CrawlSpider):
         # if '-' in item['any_lowest_price']: item['any_lowest_price'] = item['any_lowest_price'][:item['any_lowest_price'].index(' -')]
 
         try:  # todo: LinkExtractor pulling some denied site. Don't know why
-            item['asin'] = re.search('.*\/dp\/([\w\d]+).*', response.url).group(1)
+            item['asin'] = re.search('.+\/dp\/([\w\d]*).*s=books.*', response.url).group(1)
         except:
             yield None
 

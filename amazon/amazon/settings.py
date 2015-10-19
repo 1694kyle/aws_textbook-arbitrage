@@ -22,9 +22,9 @@ NEWSPIDER_MODULE = 'amazon.spiders'
 USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 20
+CONCURRENT_REQUESTS =16
 
-CONCURRENT_ITEMS = 100
+CONCURRENT_ITEMS = 200
 
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
@@ -32,7 +32,7 @@ CONCURRENT_ITEMS = 100
 #DOWNLOAD_DELAY = 0
 
 # The download delay setting will honor only one of:
-CONCURRENT_REQUESTS_PER_DOMAIN = 32
+CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP=16
 
 # Disable cookies (enabled by default)
@@ -74,10 +74,10 @@ DEPTH_LIMIT = 500
 
 ITEM_PIPELINES = {
     'amazon.pipelines.InitialPipeline': 100,
-    'amazon.pipelines.TradeEligiblePipeline': 200,
-    'amazon.pipelines.PricePipeline': 300,
+    'amazon.pipelines.PricePipeline': 200,
+    'amazon.pipelines.TradeEligiblePipeline': 300,
     'amazon.pipelines.ProfitablePipeline': 400,
-    'amazon.pipelines.LoggedProfitablePipeline': 600,
+    # 'amazon.pipelines.LoggedProfitablePipeline': 600,
     # 'amazon.pipelines.WriteItemPipeline': 700,
     # 'amazon.pipelines.DynamoDBPipeline': 800,
 }
@@ -97,14 +97,14 @@ if not os.path.isdir(os.path.join(LOCAL_OUTPUT_DIR, 'Logs')): os.makedirs(os.pat
 open(LOCAL_OUTPUT_FILE, 'wb').close()
 open(LOCAL_ITEM_LOG, 'wb').close()
 
-# FEED_URI = 's3://textbook-arbitrage/scraping_results/results-{}.csv'.format(date)
-# FEED_FORMAT = 'csv'
-# FEED_EXPORT_FIELDS = ['title', 'asin', 'price', 'trade_value', 'profit', 'roi', 'url']
-# AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY')
-# AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_KEY')
+FEED_URI = 's3://textbook-arbitrage/scraping_results/results-{}.csv'.format(date)
+FEED_FORMAT = 'csv'
+FEED_EXPORT_FIELDS = ['title', 'asin', 'price', 'trade_value', 'profit', 'roi', 'url']
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_KEY')
 
-LOG_LEVEL = 'ERROR'
-LOG_FILE = os.path.join(LOCAL_OUTPUT_DIR, 'Logs', 'log {}'.format(date))
+# LOG_LEVEL = 'ERROR'
+# LOG_FILE = os.path.join(LOCAL_OUTPUT_DIR, 'Logs', 'log {}'.format(date))
 # open(LOG_FILE, 'wb').close()
 
 # Enable and configure the AutoThrottle extension (disabled by default)

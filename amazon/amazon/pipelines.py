@@ -7,8 +7,9 @@
 from scrapy.exceptions import DropItem
 from amazon import settings
 import logging
-# from scrapy.exporters import CsvItemExporter
-
+from amazonproduct.api import API
+from amazonproduct.errors import AWSError
+import time
 
 class InitialPipeline(object):
     # def __init__(self):
@@ -27,37 +28,29 @@ class InitialPipeline(object):
             return item
 
 
+class PricePipeline(object):
+    def process_item(self, item, spider):
+        if len(spider.running_items) > 8:
+            items = get_price_data(spider.running_items)
+            spider.running_items = []
+            for item in items:
+                return item
+        else:
+            raise DropItem()
+
+
 class TradeEligiblePipeline(object):
     def process_item(self, item, spider):
-        if item['trade_in_eligible']: # or item.get('chegg_trade_value') or item.get('buyback_trade_value'):
-            if not item['trade_value'] == ' ': item['trade_value'] = float(item['trade_value'])
+        if item['trade_in_eligible']:
             return item
         else:
             raise DropItem('Not Trade Eligible: {}'.format(item['asin']))
-
-
-class PricePipeline(object):
-    def process_item(self, item, spider):
-        prices = ['lowest_used_price1', 'lowest_used_price2', 'lowest_new_price1', 'lowest_new_price2']#, 'any_lowest_price']
-        price_values = []
-        for price in prices:
-            try:
-                price_values.append(float(item[price]))
-            except:
-                continue  # no price for price key
-        if len(price_values) == 0:
-            raise DropItem('\tNo Price: {}'.format(item['asin']))
-        else:
-            min_price = min(price_values)
-            item['price'] = min_price
-            return item
 
 
 class ProfitablePipeline(object):
     def process_item(self, item, spider):
         profitable, item = check_profit(item)
         if profitable:
-            print 'Profitable: {0}\n\tProfit - {1}\n\tCost - {2}\n\tROI - {3}'.format(item['asin'], item['profit'], item['price'], item['roi'])
             try:
                 logging.error('Profitable: {0}\n\tProfit - {1}\n\tCost - {2}\n\tROI - {3}'.format(item['asin'], item['profit'], item['price'], item['roi']))
             except:
@@ -66,17 +59,6 @@ class ProfitablePipeline(object):
         else:
             raise DropItem('\tNot Profitable: {}'.format(item['asin']))
 
-
-class LoggedProfitablePipeline(object):
-    def __init__(self):
-        self.logged_profitable_items = []
-
-    def process_item(self, item, spider):
-        if item['asin'] not in self.logged_profitable_items:
-            self.logged_profitable_items.append(item['asin'])
-            return item
-        else:
-            raise DropItem('\tAlready Logged Profitable: {}'.format(item['asin']))
 
 class DynamoDBPipeline(object):
     # todo: get this set up. possible to store scraped items for quicker searching
@@ -92,7 +74,6 @@ class WriteItemPipeline(object):
             f.write('\n')
 
 
-
 def check_profit(item):
     price = item['price']
     chegg_value = item.get('chegg_trade_value', 0)
@@ -100,12 +81,12 @@ def check_profit(item):
     trade_value = item.get('trade_value', 0)
     max_trade = max(chegg_value, buyback_value, trade_value)
     # find trade link
-    if chegg_value == max_trade:
-        item['trade_link'] = item['chegg_trade_link']
-    elif buyback_value == max_trade:
-        item['trade_link'] = item['buyback_trade_link']
-    else:
-        item['trade_link'] = item['url']
+    # if chegg_value == max_trade:
+    #     item['trade_link'] = item['chegg_trade_link']
+    # elif buyback_value == max_trade:
+    #     item['trade_link'] = item['buyback_trade_link']
+    # else:
+    #     item['trade_link'] = item['url']
 
     true_profit = (max_trade - price) - 3.99  # account for shipping
     if true_profit > 10:
@@ -115,6 +96,52 @@ def check_profit(item):
         return True, item
     else:
         return False, item
+
+
+def get_price_data(items):
+        asins = [k for k, v in items.iteritems()]
+        response = amzn_search(asins)
+        for item in response.Items.Item:
+            asin = item.ASIN
+            Item = items[asin]
+            if hasattr(item.ItemAttributes, 'IsEligibleForTradeIn'):
+                print 'Eligible: {}'.format(asin)
+                Item['trade_in_eligible'] = bool(item.ItemAttributes.IsEligibleForTradeIn)
+                Item['trade_value'] = item.ItemAttributes.TradeInValue.Amount / 100.0
+                Item['lowest_used_price'] = item.OfferSummary.LowestUsedPrice.Amount / 100.0
+                Item['lowest_new_price'] = item.OfferSummary.LowestNewPrice.Amount / 100.0
+            else:
+                Item['trade_in_eligible'] = False
+                continue
+        return items
+
+
+def amzn_search(asins):
+    api = API(locale='us')
+    response = _get_amzn_response(asins, api)
+    if not response:
+        return None
+    else:
+        return response
+
+
+def _get_amzn_response(asins, api):
+    query = 'response = api.item_lookup(",".join(asins), ResponseGroup="Large")'
+    err_count = 0
+    while True:
+        try:
+            exec(query)
+            return response
+
+        except AWSError, e:
+            err_count += 1
+            print 'AWS Error: {}'.format(e.code)
+            if err_count > 5:
+                return None
+            time.sleep(2)
+            continue
+
+
 
 
 

@@ -11,11 +11,8 @@ import scrapy
 class AmazonItem(scrapy.Item):
     title = scrapy.Field()
     asin = scrapy.Field()
-    any_lowest_price = scrapy.Field()
-    lowest_used_price1 = scrapy.Field()
-    lowest_new_price1 = scrapy.Field()
-    lowest_used_price2 = scrapy.Field()
-    lowest_new_price2 = scrapy.Field()
+    lowest_used_price = scrapy.Field()
+    lowest_new_price = scrapy.Field()
     price = scrapy.Field()
     trade_in_eligible = scrapy.Field()
     trade_value = scrapy.Field()
@@ -25,10 +22,6 @@ class AmazonItem(scrapy.Item):
     roi = scrapy.Field()
     isbn10 = scrapy.Field()
     isbn13 = scrapy.Field()
-    trade_link = scrapy.Field()
-    chegg_trade_value = scrapy.Field()
-    chegg_trade_link = scrapy.Field()
-    buyback_trade_value = scrapy.Field()
-    buyback_trade_link = scrapy.Field()
+
 
 
